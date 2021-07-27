@@ -1,41 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  retrieveTutorials,
-  findTutorialsByTitle,
-  deleteAllTutorials,
-} from "../actions/tutorials";
+  retrieveUsers,
+  findUsersByUsername,
+  deleteAllUsers,
+} from "../actions/users";
 import { Link } from "react-router-dom";
 
-const TutorialsList = () => {
-    const [currentTutorial, setCurrentTutorial] = useState(null);
+const UsersList = () => {
+    const [currentUser, setCurrentUser] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
-    const [searchTitle, setSearchTitle] = useState("");
+    const [searchUsername, setSearchUsername] = useState("");
 
-    const tutorials = useSelector(state => state.tutorials);
+    //const users = useSelector(state => state.tutorials);
+    const users = useSelector(state => state.users);
     const dispatch = useDispatch();
 
     useEffect(() => {
-    dispatch(retrieveTutorials());
+        dispatch(retrieveUsers());
     }, [dispatch]);
 
-    const onChangeSearchTitle = e => {
-    const searchTitle = e.target.value;
-    setSearchTitle(searchTitle);
+    const onChangeSearchUsername = e => {
+        const userName = e.target.value;
+        setSearchUsername(userName);
     };
 
     const refreshData = () => {
-    setCurrentTutorial(null);
-    setCurrentIndex(-1);
+        setCurrentUser(null);
+        setCurrentIndex(-1);
     };
 
-    const setActiveTutorial = (tutorial, index) => {
-    setCurrentTutorial(tutorial);
-    setCurrentIndex(index);
+    const setActiveUser = (user, index) => {
+        setCurrentUser(user);
+        setCurrentIndex(index);
     };
 
-    const removeAllTutorials = () => {
-    dispatch(deleteAllTutorials())
+    const removeAllUsers = () => {
+        dispatch(deleteAllUsers())
         .then(response => {
         console.log(response);
         refreshData();
@@ -45,9 +46,9 @@ const TutorialsList = () => {
         });
     };
 
-    const findByTitle = () => {
-    refreshData();
-    dispatch(findTutorialsByTitle(searchTitle));
+    const findByUsername = () => {
+        refreshData();
+        dispatch(findUsersByUsername(searchUsername));
     };
 
     return (
@@ -57,15 +58,15 @@ const TutorialsList = () => {
                 <input
                 type="text"
                 className="form-control"
-                placeholder="Search by title"
-                value={searchTitle}
-                onChange={onChangeSearchTitle}
+                placeholder="Search by username"
+                value={searchUsername}
+                onChange={onChangeSearchUsername}
                 />
                 <div className="input-group-append">
                 <button
                     className="btn btn-outline-secondary"
                     type="button"
-                    onClick={findByTitle}
+                    onClick={findByUsername}
                 >
                     Search
                 </button>
@@ -73,55 +74,61 @@ const TutorialsList = () => {
             </div>
             </div>
             <div className="col-md-6">
-            <h4>Tutorials List</h4>
+            <h4>Users List</h4>
 
             <ul className="list-group">
-                {tutorials &&
-                tutorials.map((tutorial, index) => (
+                {users &&
+                users.map((user, index) => (
                     <li
                     className={
                         "list-group-item " + (index === currentIndex ? "active" : "")
                     }
-                    onClick={() => setActiveTutorial(tutorial, index)}
+                    onClick={() => setActiveUser(user, index)}
                     key={index}
                     >
-                    {tutorial.title}
+                    {user.userName}
                     </li>
                 ))}
             </ul>
 
             <button
                 className="m-3 btn btn-sm btn-danger"
-                onClick={removeAllTutorials}
+                onClick={removeAllUsers}
             >
                 Remove All
             </button>
             </div>
             <div className="col-md-6">
-            {currentTutorial ? (
+            {currentUser ? (
                 <div>
-                <h4>Tutorial</h4>
+                <h4>User</h4>
                 <div>
                     <label>
-                    <strong>Title:</strong>
+                    <strong>Username:</strong>
                     </label>{" "}
-                    {currentTutorial.title}
+                    {currentUser.userName}
                 </div>
                 <div>
                     <label>
-                    <strong>Description:</strong>
+                    <strong>First name:</strong>
                     </label>{" "}
-                    {currentTutorial.description}
+                    {currentUser.firstName}
                 </div>
                 <div>
                     <label>
-                    <strong>Status:</strong>
+                    <strong>Last name:</strong>
                     </label>{" "}
-                    {currentTutorial.published ? "Published" : "Pending"}
+                    {currentUser.lastName}
+                </div>
+                <div>
+                    <label>
+                    <strong>Email:</strong>
+                    </label>{" "}
+                    {currentUser.email}
                 </div>
 
                 <Link
-                    to={"/tutorials/" + currentTutorial.id}
+                    to={"/users/" + currentUser.id}
                     className="badge badge-warning"
                 >
                     Edit
@@ -130,7 +137,7 @@ const TutorialsList = () => {
             ) : (
                 <div>
                 <br />
-                <p>Please click on a Tutorial...</p>
+                <p>Please click on a User...</p>
                 </div>
             )}
             </div>
@@ -138,4 +145,4 @@ const TutorialsList = () => {
     );
 };
 
-export default TutorialsList;
+export default UsersList;
